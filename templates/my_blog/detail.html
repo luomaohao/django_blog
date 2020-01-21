@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+<!-- 写入 base.html 中定义的 title -->
+{% block title %}
+    文章详情
+{% endblock title %}
+
+<!-- 写入 base.html 中定义的 content -->
+{% block content %}
+
+<!-- 文章详情 -->
+<div class="container">
+    <div class="row">
+        <div class="col-9">
+        <!-- 标题及作者 -->
+            <h1 class="mt-4 mb-4">{{ article.title }}</h1>
+            <div class="alert alert-success">
+            作者：{{ article.author }}  
+            {% if user == article.author %}
+
+                <a href="#" onclick="confirm_safe_delete()">删除文章</a> 
+                <a href="{% url "my_blog:article_update" article.id %}">修改文章</a>
+            {% endif %}
+        </div>
+        <div>
+            浏览：{{article.total_view}}
+        </div>
+       <div class="col-6 mt-4">
+            <h4><strong>目录</strong></h4>
+            <hr>
+            <div>
+                {{ toc|safe }}
+            </div>
+        </div>
+    </div>
+</div>
+        <!-- 新增一个隐藏的表单 -->
+<form 
+      style="display:none;" 
+      id="safe_delete"
+      action="{% url 'my_blog:article_safe_delete' article.id %}" 
+      method="POST"
+      >
+    {% csrf_token %}
+    <button type="submit">发送</button>
+</form>
+        <!-- 文章正文 -->
+        <div class="col-10">
+            <p>{{ article.body|safe}}</p>
+        </div>
+    </div>
+</div>
+<script>
+function confirm_safe_delete() {
+    layer.open({
+        title: "确认删除",
+        content: "确认删除这篇文章吗？",
+        yes: function(index, layero) {
+            $('form#safe_delete button').click();
+            layer.close(index);
+        }
+    })
+}
+</script>
+{% endblock content %}
