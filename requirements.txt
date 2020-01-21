@@ -67,7 +67,7 @@ pytz==2018.3
 pywifi==1.1.10
 pywin32==223
 reportlab==3.5.9
-requests==2.18.4
+requests==2.20.0
 simplegeneric==0.8.1
 six==1.11.0
 typed-ast==1.1.0
