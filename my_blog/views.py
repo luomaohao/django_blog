@@ -16,6 +16,9 @@ from django.db.models import Q
 #引入装饰器
 from django.contrib.auth.decorators import login_required
 import markdown
+
+def index(request):
+	return render(request,'index.html')
 def article_list(request):
 	#查询文章数量
 	num = len(ArticlePost.objects.all())
