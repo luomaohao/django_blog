@@ -10,7 +10,7 @@
 {% block content %}
 
 <!-- 文章详情 -->
-<div class="container">
+<div class="container" style="margin-left: 500px;">
     <div class="row">
         <div class="col-9">
         <!-- 标题及作者 -->
@@ -26,7 +26,7 @@
         <div>
             浏览：{{article.total_view}}
         </div>
-       <div class="col-6 mt-4">
+       <div class="col-12">
             <h4><strong>目录</strong></h4>
             <hr>
             <div>
@@ -47,7 +47,7 @@
 </form>
         <!-- 文章正文 -->
         <div class="col-10">
-            <p>{{ article.body|safe}}</p>
+            <p style="text-align: center;">{{ article.body|safe}}</p>
         </div>
     </div>
 </div>
