@@ -1,0 +1,54 @@
+
+<!-- 载入静态文件 -->
+{% load staticfiles %}
+
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+</head>
+
+<body>
+    <form
+    action="."
+    method="POST"
+    id="reply_form"
+    >
+        {% csrf_token %}
+        <div class="form-group">
+            <div id="test">
+                {{ comment_form.body }}
+            </div>
+        </div>
+    </form>
+    <!-- 提交按钮 -->
+    <button onclick="confirm_submit({{ article_id }}, {{ parent_comment_id }})" class="btn btn-primary">发送</button>
+
+    <script src="{% static 'jquery/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'popper/popper.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+
+    <!-- csrf token -->
+    <script src="{% static 'csrf.js' %}"></script>
+
+    <script>
+    function confirm_submit(article_id, comment_id){
+        // 从 表单 中取值
+        console.log('run');
+        // 调用 ajax 与后端交换数据
+        $.ajax({
+            url: '/comment/post-comment/' + article_id + '/' + comment_id,
+            type: 'POST',
+            data: {"body": $("#id_body").val()},
+            // 成功回调
+            success: function(e){
+                if(e === '200 OK'){
+                    parent.location.reload();
+                }
+            }
+        })
+    }
+    </script>
+
+</body>
+</html>

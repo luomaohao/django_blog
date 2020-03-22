@@ -1,19 +1,23 @@
-<nav class="navbar navbar-expand-lg navbar-fixed-top navbar-dark bg-dark">
-  <div class="container">
+<nav class="navbar navbar-expand-md navbar-fixed-top navbar-light">
+    <div class="container">
 
 	<!-- 导航栏商标 -->
 	<a class="navbar-brand" href="http://www.luoziqiang.com">Codeplay</a>
-
+    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 	<!-- 导航入口 -->
-	<div>
-	  <ul class="nav navbar-nav">
+	<div class="collapse navbar-collapse" id="navbarCollapse">
+	    <ul class="nav navbar-nav ml-auto">
 		<!-- 条目 -->
 		<li class="nav-item">
-
-		<a class="nav-link" href="{% url 'my_blog:article_list' %}">文章</a>
+		    <a class="nav-link" href="{% url 'my_blog:article_list' %}">文章</a>
 		</li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'my_blog:category' %}">文章分类</a>
+        </li>
 		<li class="nav-item" style="margin-left: 10px">
-		 <a class="nav-link" href="{% url 'my_blog:article_create' %}">写文章</a>
+		    <a class="nav-link" href="{% url 'my_blog:article_create' %}">写文章</a>
 		</li>
 		{% if user.is_authenticated %}
 		<!-- 如果用户已经登录，则显示用户名下拉框 -->
@@ -24,6 +28,7 @@
 			<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 				<a class="dropdown-item" href="#" onclick="user_delete()">删除用户</a>
 			    <a class="dropdown-item" href="{% url 'userprofile:logout' %}">退出登录</a>
+                <a class="dropdown-item" href="{% url 'userprofile:changepwd' %}">更改密码</a>
 			</ul>
 		</li>
 	<!-- 如果用户未登录，则显示 “登录” -->

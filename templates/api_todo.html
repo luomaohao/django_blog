@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>to do list</title>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Vue Todo</title>
+    <style>
+        .completed {
+            text-decoration: line-through;
+        }
+
+        .selected {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div id="todo-app">
+    <div>
+        <input type="button" value="获取数据" @click="get_data"/>
+        <input type="button" value="保存数据" @click="store_data"/>
+        <input type="button" value="全部标为完成" @click="markAsallcompleted"/>
+        <input type="text" v-model="newTodoTitle" @keyup.enter="addTodo" placeholder="添加 todo"/>
+    </div>
+    <!-- todo list -->
+        <ul>
+            <li v-for="todo in todos"  :key="todo.id">
+                <!-- 绑定类 -->
+                <span :class="{completed:todo.completed}" @dblclick="editItem(todo)">{% verbatim myblock %}{{ todo.title}}{% endverbatim myblock %}</span>
+                <input v-if="!todo.completed"  value="标为完成" type="button" @click="markAsCompleted(todo)">
+                <input type="button" value="删除" @click="removeItem(todo)">
+                <input type="text" value="编辑 todo..." v-if="editedTodo!==null && editedTodo.id===todo.id" v-model="todo.title"
+                @keyup.enter="editDone(todo)"/>
+                <input v-if="todo.completed" type="button" value="撤销操作" @click="markAsundone(todo)">
+            </li>
+        </ul>
+    <!-- end todo list -->
+    <div>
+        <span>剩余 3 项未完成 ---</span>
+        <span>筛选：
+      <input type="button" class="selected" value="全部">
+      <input type="button" value="进行中">
+      <input type="button" value="已完成">
+      <input type="button" value="清除已完成">
+      <input type="button" value="清除全部">
+    </span>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+
+    const app = new Vue({
+        el:'#todo-app',
+        data: {
+                newTodoTitle: '',
+                todos: [
+                {id: 0, title: '学习 Vue', 'completed':false},
+                {id: 1, title: '整个牛项目', 'competed':false},
+                {id: 2, title: '迎娶白富美走上人生巅峰', 'completed':false},
+
+                ],
+                editedTodo:null
+        },
+        methods: {
+            get_data: function() {
+                var that = this;
+                axios.get('/api/todojson')
+                .then(function (response) {
+                    this.todos = {'title': 'hahhaha'};
+                    obj_list = response.data;
+                    new_obj_list = [];
+                    for (let i=0; i<obj_list.length; i++){
+                        let new_obj = {'id':null, 'title':null, 'completed':null};
+                        new_obj['id'] = obj_list[i]['pk'];
+                        new_obj['title'] = obj_list[i]['fields']['title'];
+                        new_obj['completed'] = obj_list[i]['fields']['completed']
+                        new_obj_list.push(new_obj);
+                    }
+                    that.todos = new_obj_list;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            store_data: function(){
+                let jsondata = '';
+                for (let i=0;i<this.todos.length;i++)
+                {
+                    let temp = JSON.stringify(this.todos[i]);
+                    jsondata +=temp;
+                    jsondata+' ';
+                }
+                console.log(jsondata);
+                axios
+                .post('/api/activities/',jsondata)
+                .then(function (response) {
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+            },
+            addTodo: function () {
+                 let id = this.todos.length;
+                 ++id;
+                this.todos.push({id: ++id, title: this.newTodoTitle, completed:false});
+                this.newTodoTitle = ''
+                console.log(this.todos);
+            },
+            markAsCompleted: function (todo) {
+                todo.completed = true;
+            },
+            markAsundone: function (todo) {
+                todo.completed = false;
+            },
+            removeItem: function (todo) {
+                alert("确定要删除？");
+                this.todos.splice(this.todos.indexOf(todo), 1);
+                axios.delete(''+todo.id)
+                .then(function (response) {
+                    console.log(response);
+                }).catch(function (error) {
+                    console.log(error);
+                })
+            },
+            editItem: function (todo) {
+                this.editedTodo = {id: todo.id, title: todo.title}
+            },
+            editDone: function (todo) {
+                this.editedTodo = null;
+            },
+            markAsallcompleted: function () {
+                console.log('run');
+                for (let i=0;i<this.todos.length;i++){
+                    if (!(this.todos[i].completed)){
+                        this.todos[i].completed = true;
+                    }
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>
